@@ -3,10 +3,18 @@ const express = require("express");
 const config = require("./config");
 const configureMiddleware = require("./middleware");
 const configureRoutes = require("./routes");
-const { configureCollection } = require("./controllers/collection");
 const socketio = require("socket.io");
 const gameSocket = require("./socket/index");
+require("./config/loadEnv")();
 
+// Connect and get reference to mongodb instance
+// let db;
+
+// (async function () {
+//   db = await connectDB();
+// })();
+
+// Init express app
 const app = express();
 
 // Middleware
@@ -30,8 +38,6 @@ const startServer = () => {
       const io = socketio(server);
       io.on("connect", (socket) => gameSocket.init(socket, io));
 
-      // Collections
-      configureCollection();
     })
     .on("error", (err) => {
       if (err.code === "EADDRINUSE") {
